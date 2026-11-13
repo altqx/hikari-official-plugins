@@ -1,0 +1,31 @@
+{
+  "id": "hikarisub.git-line-marks",
+  "name": "Git line marks",
+  "version": "1.0.0",
+  "api": 1,
+  "main": "main.lua",
+  "tier": "restricted",
+  "authors": ["altqx"],
+  "summary": "Marks the Lines added, changed or removed since a git branch, tag or commit.",
+  "description": "Pick a branch, tag or commit, and the Grid marks each Line added, changed or removed since then, with a tooltip that names the change. Lines are matched as ASS Events, so a moved or retimed Line reads as changed. Marks refresh after each save and are never written into the file.",
+  "license": "MIT",
+  "homepage": "https://github.com/altqx/hikari-official-plugins/tree/main/plugins/git-line-marks",
+  "icon": "icon.svg",
+  "publicKey": "RWQwy4ukzuuZw1Rmfuf/pEwiEwWJhmXWHE8xGwRY6bWV/DRGBz3PbmYK",
+  "permissions": {
+    "vcs.read": "Compares your subtitle file with the branch, tag or commit you pick, to mark the Lines that changed since then."
+  },
+  "contributes": {
+    "commands": [
+      {"id": "refresh", "title": "Refresh git line marks"},
+      {"id": "clear", "title": "Clear git line marks"}
+    ],
+    "panels": [
+      {"id": "marks", "title": "Git line marks"}
+    ],
+    "settings": [
+      {"id": "refresh-on-save", "title": "Refresh when I save", "type": "boolean", "default": true},
+      {"id": "last-ref", "title": "Last branch, tag or commit compared", "type": "string", "default": ""}
+    ]
+  }
+}
