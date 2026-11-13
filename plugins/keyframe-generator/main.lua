@@ -1,71 +1,109 @@
-local base64 = require("keyframes.base64")
-local detect = require("keyframes.detect")
+local scan = require("keyframes.scan")
+local view = require("keyframes.view")
 
-local BATCH = 256
-local EDGE = 64
+local PANEL = "keyframes"
 
-local function lastFrame()
-    local low, high = 0, 1
-    while hikari.call("video.frames", {from = high, to = high, maxEdge = 16}) do
-        low, high = high, high * 2
-    end
-    while high - low > 1 do
-        local mid = math.floor((low + high) / 2)
-        if hikari.call("video.frames", {from = mid, to = mid, maxEdge = 16}) then
-            low = mid
-        else
-            high = mid
-        end
-    end
-    return low
+local state = {video = false, busy = false}
+
+local function settings()
+    return {sensitivity = hikari.settings.get("sensitivity"), minGap = hikari.settings.get("min-gap")}
 end
 
-local function report(name, text)
-    local file = hikari.files.open("data", "spike/" .. name)
-    hikari.files.write(file, text)
+local function render()
+    hikari.panels.render(PANEL, view.tree(state, settings()))
 end
 
-local function scan(analyse)
-    local info = hikari.call("video.info", {})
-    if not info or not info.open then
-        hikari.notify("Open a video first.", "warning")
+local function refresh()
+    state.video = scan.video(hikari.call) ~= nil
+    render()
+end
+
+local function find()
+    state.busy, state.note, state.applied = true, nil, nil
+    state.video = true
+    render()
+    local result = scan.run(hikari.call, hikari.job, settings())
+    state.busy = false
+    if result.status == "found" then
+        state.result = result
+    elseif result.status == "cancelled" then
+        state.note = {text = "Cancelled at frame " .. scan.formatCount(result.at) .. " of "
+            .. scan.formatCount(result.frames) .. ". Nothing was changed.", style = "muted"}
+    elseif result.status == "novideo" then
+        state.video = false
+    else
+        state.note = {text = "Couldn’t finish: " .. result.message}
+    end
+    render()
+end
+
+local function begin()
+    return hikari.job.begin{title = "Finding keyframes"}
+end
+
+local function stillTheVideo()
+    if scan.sameVideo(hikari.call, state.result.video) then
+        return true
+    end
+    state.result, state.applied = nil, nil
+    state.note = {text = "The open video changed since the scan. Find keyframes again."}
+    refresh()
+    return false
+end
+
+local function setKeyframes(file)
+    local done, err = hikari.call("video.set_keyframes", {frames = hikari.array(state.result.keyframes), file = file})
+    if not done then
+        hikari.notify("Couldn’t set the keyframes: " .. tostring(err and err.message), "error")
+        return false
+    end
+    return true
+end
+
+local actions = {}
+
+function actions.find()
+    if not begin() then
+        hikari.notify("Run Automation › Keyframe generator › Find keyframes: this HikariSub can’t scan from the panel.",
+                      "warning")
         return
     end
-    hikari.job.begin{title = "Finding keyframes"}
-    local last = lastFrame()
-    local detector = detect.new({
-        sensitivity = hikari.settings.get("sensitivity"),
-        minGap = hikari.settings.get("min-gap"),
-    })
-    local pixels = {}
-    for from = 0, last, BATCH do
-        if hikari.job.cancelled() then
-            report("result.txt", "cancelled at " .. from .. "\n")
-            return
-        end
-        hikari.job.progress(from / (last + 1), "Frame " .. from .. " of " .. (last + 1))
-        local batch, err = hikari.call("video.frames", {from = from, to = math.min(from + BATCH - 1, last), maxEdge = EDGE})
-        if not batch then
-            report("result.txt", "failed at " .. from .. ": " .. tostring(err and err.message) .. "\n")
-            return
-        end
-        if analyse then
-            local count = batch.width * batch.height
-            for _, f in ipairs(batch.frames) do
-                pixels = base64.bytes(f.data, {})
-                detector:push(f.frame, pixels, count)
-            end
-        end
-    end
-    local lines = {"frames " .. (last + 1), "keyframes " .. #detector.keyframes}
-    for _, k in ipairs(detector.keyframes) do
-        lines[#lines + 1] = tostring(k)
-    end
-    if analyse then
-        hikari.call("video.set_keyframes", {frames = hikari.array(detector.keyframes)})
-    end
-    report("result.txt", table.concat(lines, "\n") .. "\n")
+    find()
 end
 
-hikari.commands.register("scan", function() scan(true) end)
-hikari.commands.register("fetch", function() scan(false) end)
+function actions.set()
+    if state.result and stillTheVideo() and setKeyframes(nil) then
+        state.applied = {}
+        render()
+    end
+end
+
+function actions.save()
+    if not (state.result and stillTheVideo()) then
+        return
+    end
+    local picked = hikari.files.pick{title = "Save keyframes", save = true, name = "keyframes.txt",
+                                     filters = {{name = "Keyframes", patterns = {"*.txt"}}, {name = "All files", patterns = {"*"}}}}
+    if picked and setKeyframes(picked.file) then
+        state.applied = {saved = picked.name}
+        render()
+    end
+end
+
+hikari.panels.on(PANEL, function(e)
+    if e.kind == "show" then
+        refresh()
+    elseif e.kind == "change" and e.widget == "sensitivity" then
+        hikari.settings.set("sensitivity", math.floor(e.value + 0.5))
+    elseif e.kind == "change" and e.widget == "min-gap" then
+        hikari.settings.set("min-gap", math.floor(e.value + 0.5))
+    elseif e.kind == "click" and actions[e.widget] then
+        actions[e.widget]()
+    end
+end)
+
+hikari.commands.register("scan", function()
+    hikari.panels.show(PANEL)
+    begin()
+    find()
+end)

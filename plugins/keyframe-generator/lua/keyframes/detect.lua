@@ -16,8 +16,10 @@ end
 
 function detect.new(options)
     options = options or {}
+    local sensitivity = options.sensitivity or detect.defaults.sensitivity
     local self = {
-        limits = detect.thresholds(options.sensitivity or detect.defaults.sensitivity),
+        sensitivity = sensitivity,
+        limits = detect.thresholds(sensitivity),
         minGap = options.minGap or detect.defaults.minGap,
         previous = nil,
         previousHistogram = nil,

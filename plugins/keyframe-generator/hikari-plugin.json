@@ -5,19 +5,44 @@
   "api": 1,
   "main": "main.lua",
   "tier": "restricted",
-  "authors": ["altqx"],
+  "authors": [
+    "altqx"
+  ],
   "summary": "Finds the video's scene changes and makes keyframes from them.",
+  "icon": "icon.svg",
   "license": "MIT",
   "homepage": "https://github.com/altqx/hikari-official-plugins",
   "publicKey": "RWQwy4ukzuuZw1Rmfuf/pEwiEwWJhmXWHE8xGwRY6bWV/DRGBz3PbmYK",
   "contributes": {
     "commands": [
-      {"id": "scan", "title": "Find keyframes"},
-      {"id": "fetch", "title": "Read frames only (spike)"}
+      {
+        "id": "scan",
+        "title": "Find keyframes"
+      }
     ],
     "settings": [
-      {"id": "sensitivity", "title": "Sensitivity", "type": "integer", "default": 50, "minimum": 0, "maximum": 100},
-      {"id": "min-gap", "title": "Minimum gap (frames)", "type": "integer", "default": 10, "minimum": 1, "maximum": 1000}
+      {
+        "id": "sensitivity",
+        "title": "Sensitivity",
+        "type": "integer",
+        "default": 50,
+        "minimum": 0,
+        "maximum": 100
+      },
+      {
+        "id": "min-gap",
+        "title": "Minimum gap (frames)",
+        "type": "integer",
+        "default": 10,
+        "minimum": 1,
+        "maximum": 1000
+      }
+    ],
+    "panels": [
+      {
+        "id": "keyframes",
+        "title": "Keyframe generator"
+      }
     ]
   }
 }
