@@ -149,13 +149,16 @@ end)
 
 hikari.commands.register("clear", clear)
 
-hikari.events.on("document.saved", function()
+local function saved()
     if state.problem and state.problem.state == "no_path" then
         refresh()
     elseif state.onSave and state.done then
         run()
     end
-end)
+end
+
+-- HikariSub before #1114 has no document.saved and refuses the subscription.
+pcall(hikari.events.on, "document.saved", saved)
 
 hikari.events.on("documents.changed", function()
     state.done, state.compared, state.search = nil, nil, ""
