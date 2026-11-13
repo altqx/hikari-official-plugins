@@ -112,6 +112,19 @@ class ReleaseTools(unittest.TestCase):
             with self.subTest(tag=tag), self.assertRaises(release.ReleaseError):
                 release.folder_for_tag(tag)
 
+    def test_a_dispatch_names_only_a_folder_directly_in_plugins(self):
+        nested = self.plugins / "sample" / "inner"
+        shutil.copytree(self.sample(), nested, ignore=shutil.ignore_patterns("inner"))
+        for name in ("../tools/tests/plugins/sample", "sample/inner", "..", "Sample", "/sample"):
+            with self.subTest(name=name), self.assertRaisesRegex(release.ReleaseError, "by its folder in plugins/"):
+                release.plugin_folder(name)
+        self.assertEqual(release.plugin_folder("sample"), self.sample())
+
+    def test_a_tag_names_only_a_folder_directly_in_plugins(self):
+        for tag in ("hikarisub...-v1.2.0", "hikarisub.sample.inner-v1.2.0"):
+            with self.subTest(tag=tag), self.assertRaises(release.ReleaseError):
+                release.folder_for_tag(tag)
+
     def test_release_notes_are_the_versions_changelog_section(self):
         self.assertEqual(release.release_notes(self.sample(), "1.2.0"), "- Says hello.\n")
         with self.assertRaisesRegex(release.ReleaseError, "no '## 2.0.0' section"):

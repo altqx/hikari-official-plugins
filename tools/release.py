@@ -124,9 +124,10 @@ def folder_for_tag(tag: str) -> tuple[Path, str]:
     if not match:
         raise ReleaseError(f"{tag}: a release tag is <id>-v<version>, e.g. hikarisub.macro-chains-v1.0.0")
     pid, version = match.groups()
-    folder = PLUGINS / pid.removeprefix(HANDLE)
-    if not (folder / package.MANIFEST).is_file():
-        raise ReleaseError(f"{tag}: no plugin {pid} in plugins/")
+    try:
+        folder = plugin_folder(pid.removeprefix(HANDLE))
+    except ReleaseError as e:
+        raise ReleaseError(f"{tag}: {e}") from e
     manifest = manifest_of(folder)
     if manifest["id"] != pid or manifest["version"] != version:
         raise ReleaseError(f"{tag}: the manifest says {manifest['id']} {manifest['version']}")
@@ -142,15 +143,17 @@ def release_notes(folder: Path, version: str) -> str:
     return match.group(1).strip() + "\n"
 
 
-def _folder(name: str) -> Path:
+def plugin_folder(name: str) -> Path:
     folder = PLUGINS / name
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", name) or folder.resolve().parent != PLUGINS.resolve():
+        raise ReleaseError(f"{name}: a plugin is named by its folder in plugins/, such as macro-chains")
     if not (folder / package.MANIFEST).is_file():
         raise ReleaseError(f"no plugin {name} in plugins/")
     return folder
 
 
 def cmd_check(args) -> None:
-    folders = [_folder(args.plugin)] if args.plugin else plugin_folders()
+    folders = [plugin_folder(args.plugin)] if args.plugin else plugin_folders()
     for folder in folders:
         target = build(folder, Path(args.out))
         run_tests(folder, args.luajit)
@@ -159,7 +162,7 @@ def cmd_check(args) -> None:
 
 
 def cmd_package(args) -> None:
-    folder = folder_for_tag(args.tag)[0] if args.tag else _folder(args.plugin)
+    folder = folder_for_tag(args.tag)[0] if args.tag else plugin_folder(args.plugin)
     target = build(folder, Path(args.out))
     sign(target, secret_from_env())
     verify(target, minisign.parse_public_key(PUBLIC_KEY.read_text()))
