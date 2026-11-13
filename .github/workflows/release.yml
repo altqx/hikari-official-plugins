@@ -1,0 +1,76 @@
+name: Release
+
+on:
+  push:
+    tags: ["hikarisub.*-v*"]
+  workflow_dispatch:
+    inputs:
+      plugin:
+        description: The plugin's folder under plugins/, e.g. macro-chains. A dry run signs it into an artifact and releases nothing.
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    env:
+      PLUGIN: ${{ inputs.plugin }}
+      TAG: ${{ github.event_name == 'push' && github.ref_name || '' }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: ./.github/actions/setup
+      - name: Check
+        run: |
+          if [ -n "$TAG" ]; then
+            python tools/release.py check "$(python tools/release.py folder "$TAG")"
+          else
+            python tools/release.py check "$PLUGIN"
+          fi
+      - name: Package and sign
+        id: sign
+        run: |
+          if [ -n "$TAG" ]; then
+            python tools/release.py package --out signed --tag "$TAG"
+          else
+            python tools/release.py package --out signed --plugin "$PLUGIN"
+          fi
+        env:
+          HIKARISUB_MINISIGN_KEY: ${{ secrets.HIKARISUB_MINISIGN_KEY }}
+          HIKARISUB_MINISIGN_PASSWORD: ${{ secrets.HIKARISUB_MINISIGN_PASSWORD }}
+      - name: Verify with minisign and the registry
+        run: |
+          minisign -V -p keys/hikarisub.pub -m "$PACKAGE"
+          python -m registry check-package "$PACKAGE"
+        env:
+          PACKAGE: ${{ steps.sign.outputs.package }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: signed
+          path: signed/
+          if-no-files-found: error
+
+  release:
+    if: github.event_name == 'push'
+    needs: package
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: ./.github/actions/setup
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: signed
+          path: signed
+      - name: Release
+        run: |
+          python tools/release.py notes "$GITHUB_REF_NAME" > "$RUNNER_TEMP/notes.md"
+          gh release create "$GITHUB_REF_NAME" signed/* --title "$GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/notes.md" --verify-tag
+        env:
+          GH_TOKEN: ${{ github.token }}
