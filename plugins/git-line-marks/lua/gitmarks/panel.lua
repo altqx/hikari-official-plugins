@@ -98,7 +98,7 @@ local function legend(result, t)
     end
     local spoken = {}
     for n, item in ipairs(items) do spoken[n] = item[2] end
-    return {kind = "canvas", height = 20, draw = draw, name = t("summary.name"),
+    return {kind = "canvas", id = "legend", height = 20, draw = draw, name = t("summary.name"),
         description = table.concat(spoken, ", ")}
 end
 

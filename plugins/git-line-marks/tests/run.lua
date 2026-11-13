@@ -542,6 +542,70 @@ test("panel: the result lists each marked Line", function()
     eq(all:find("3f2a1c9 · Lines marked: 1", 1, true) ~= nil, true, all)
 end)
 
+local WIDGETS = {
+    label = {required = {"text"}, fields = {"style", "wrap"}},
+    button = {required = {"id", "text"}, fields = {"style", "icon"}},
+    icon_button = {required = {"id", "icon", "name"}, fields = {"checked"}},
+    text = {required = {"id"}, fields = {"value", "placeholder", "label"}},
+    text_area = {required = {"id"}, fields = {"value", "placeholder", "label", "rows"}},
+    check = {required = {"id", "text"}, fields = {"value"}},
+    progress = {required = {}, fields = {"value", "text"}},
+    list = {required = {"id", "rows"}, fields = {"selected", "height"}},
+    tree = {required = {"id", "rows"}, fields = {"selected", "height"}},
+    group = {required = {"title", "children"}, fields = {}},
+    row = {required = {"children"}, fields = {}},
+    column = {required = {"children"}, fields = {}},
+    empty = {required = {"text"}, fields = {}},
+    canvas = {required = {"id", "height", "draw", "name"}, fields = {"width", "description", "hover", "tip"}},
+}
+local COMMON = {kind = true, id = true, name = true, tooltip = true, disabled = true, grow = true}
+
+local function check_widgets(node, at, problems)
+    local spec = WIDGETS[node.kind]
+    if not spec then
+        problems[#problems + 1] = at .. ": unknown kind " .. tostring(node.kind)
+        return problems
+    end
+    local known = {}
+    for _, f in ipairs(spec.required) do
+        known[f] = true
+        if node[f] == nil then problems[#problems + 1] = at .. " (" .. node.kind .. "): needs " .. f end
+    end
+    for _, f in ipairs(spec.fields) do known[f] = true end
+    for k in pairs(node) do
+        if not known[k] and not COMMON[k] then problems[#problems + 1] = at .. " (" .. node.kind .. "): unknown " .. k end
+    end
+    for n, child in ipairs(node.children or {}) do check_widgets(child, at .. "." .. n, problems) end
+    return problems
+end
+
+test("panel: every state's tree keeps the host's widget rules", function()
+    local new = base()
+    new[2].text = "Somebody left the gate open again."
+    with_ids(new)
+    local result = diff.compare(base(), new)
+    local entries = marks.entries(result, new, t)
+    local states = {
+        {title = "ep01.ass"},
+        {title = "ep01.ass", refs = REFS},
+        {title = "ep01.ass", refs = REFS, picked = "v1.0", busy = true},
+        {title = "ep01.ass", refs = REFS, search = "HEAD~2"},
+        {title = "ep01.ass", refs = REFS, picked = "v1.0", compared = "v1.0",
+            done = {result = result, entries = entries, marks = entries, found = #entries + 5, commit = REFS.tags[1].commit}},
+        {title = "ep01.ass", refs = REFS, picked = "v1.0", compared = "v1.0",
+            done = {result = result, entries = {}, marks = {}, found = 0, commit = REFS.tags[1].commit}},
+    }
+    for _, state in ipairs({"no_git", "no_repository", "no_path", "no_file", "not_ass", "timed_out", "failed"}) do
+        states[#states + 1] = {title = "ep01.ass", refs = REFS, picked = "v0.9", problem = {state = state}}
+    end
+    states[#states + 1] = {title = "ep01.ass", problem = {state = "unsafe_repository", folder = "/srv",
+        command = "git config --global --add safe.directory /srv"}}
+    for n, state in ipairs(states) do
+        local problems = check_widgets(panel.tree(state, t), "state " .. n, {})
+        eq(problems, {}, table.concat(problems, "; "))
+    end
+end)
+
 local timings = {}
 test("timing: 5,000 Lines", function()
     local old = {}
