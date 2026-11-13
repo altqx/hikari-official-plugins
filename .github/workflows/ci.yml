@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Release tools
+        run: python -m unittest discover -v -s tools/tests -t tools
+      - name: Plugins
+        run: python tools/release.py check
+      - name: Registry checks
+        run: |
+          shopt -s nullglob
+          for package in dist/*.hikariplugin; do
+            python -m registry check-package "$package"
+          done

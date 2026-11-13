@@ -1,0 +1,11 @@
+{
+  "id": "hikarisub.sample",
+  "name": "Sample",
+  "version": "1.2.0",
+  "api": 1,
+  "main": "main.lua",
+  "authors": ["altqx"],
+  "summary": "A fixture for the release tools.",
+  "license": "MIT",
+  "publicKey": "RWQwy4ukzuuZw1Rmfuf/pEwiEwWJhmXWHE8xGwRY6bWV/DRGBz3PbmYK"
+}

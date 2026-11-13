@@ -1,0 +1,23 @@
+name: Release tools
+description: Python, LuaJIT, minisign, the hikari-plugins registry checks and HikariSub's manifest schema, at pinned versions.
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - shell: bash
+      run: sudo apt-get install -y --no-install-recommends luajit minisign
+    - uses: actions/checkout@v4
+      with:
+        repository: altqx/hikari-plugins
+        ref: 76db5b358305122ad059255fb6a4434f0aaacc60
+        path: .registry
+    - shell: bash
+      run: |
+        pip install -r .registry/requirements.txt
+        curl -fsSL -o "$RUNNER_TEMP/hikari-plugin.schema.json" \
+          https://raw.githubusercontent.com/altqx/hikari/657ade4ff124a1637126c3c81dcfaba02856564f/docs/schemas/hikari-plugin.schema.json
+        echo "HIKARI_PLUGIN_SCHEMA=$RUNNER_TEMP/hikari-plugin.schema.json" >> "$GITHUB_ENV"
+        echo "PYTHONPATH=$GITHUB_WORKSPACE/.registry" >> "$GITHUB_ENV"
