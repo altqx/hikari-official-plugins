@@ -8,6 +8,7 @@ The plugins HikariSub's own team writes for [HikariSub](https://github.com/altqx
 | --- | --- | --- |
 | Macro chains | `hikarisub.macro-chains` | Records a chain of commands and Automation macros with their dialog answers and replays it as one undo step. Imports AegisubChain chains. In progress ([#1093](https://github.com/altqx/hikari/issues/1093)). |
 | Keyframe generator | `hikarisub.keyframe-generator` | Finds the video's scene changes and makes keyframes from them. In progress ([#1094](https://github.com/altqx/hikari/issues/1094)). |
+| Git line marks | `hikarisub.git-line-marks` | Marks the Lines added, changed or removed since a git branch, tag or commit, and refreshes after each save. In progress ([#1095](https://github.com/altqx/hikari/issues/1095)). |
 
 ## Layout
 
