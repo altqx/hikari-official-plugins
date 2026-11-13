@@ -1,0 +1,52 @@
+{
+  "id": "hikarisub.macro-chains",
+  "name": "Macro chains",
+  "version": "1.0.0",
+  "api": 1,
+  "main": "main.lua",
+  "authors": [
+    "altqx"
+  ],
+  "tier": "restricted",
+  "summary": "Records commands and Automation macros as a chain and runs it again as one undo step.",
+  "description": "Record a chain of HikariSub commands and Automation macros, with their dialog answers, and run it again as one undo step. Each dialog field can stay as recorded, be asked for when the chain runs, or be left out. Imports AegisubChain chains. Inspired by AegisubChain by arch1t3cht.",
+  "license": "MIT",
+  "homepage": "https://github.com/altqx/hikari-official-plugins/tree/main/plugins/macro-chains",
+  "icon": "icon.svg",
+  "publicKey": "RWQwy4ukzuuZw1Rmfuf/pEwiEwWJhmXWHE8xGwRY6bWV/DRGBz3PbmYK",
+  "contributes": {
+    "commands": [
+      {
+        "id": "record",
+        "title": "Record a chain"
+      },
+      {
+        "id": "run-slot-1",
+        "title": "Run chain slot 1"
+      },
+      {
+        "id": "run-slot-2",
+        "title": "Run chain slot 2"
+      },
+      {
+        "id": "run-slot-3",
+        "title": "Run chain slot 3"
+      },
+      {
+        "id": "run-slot-4",
+        "title": "Run chain slot 4"
+      },
+      {
+        "id": "run-slot-5",
+        "title": "Run chain slot 5"
+      }
+    ],
+    "panels": [
+      {
+        "id": "chains",
+        "title": "Macro chains",
+        "area": "right"
+      }
+    ]
+  }
+}
