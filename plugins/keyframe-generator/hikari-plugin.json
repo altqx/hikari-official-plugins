@@ -1,0 +1,23 @@
+{
+  "id": "hikarisub.keyframe-generator",
+  "name": "Keyframe generator",
+  "version": "0.1.0",
+  "api": 1,
+  "main": "main.lua",
+  "tier": "restricted",
+  "authors": ["altqx"],
+  "summary": "Finds the video's scene changes and makes keyframes from them.",
+  "license": "MIT",
+  "homepage": "https://github.com/altqx/hikari-official-plugins",
+  "publicKey": "RWQwy4ukzuuZw1Rmfuf/pEwiEwWJhmXWHE8xGwRY6bWV/DRGBz3PbmYK",
+  "contributes": {
+    "commands": [
+      {"id": "scan", "title": "Find keyframes"},
+      {"id": "fetch", "title": "Read frames only (spike)"}
+    ],
+    "settings": [
+      {"id": "sensitivity", "title": "Sensitivity", "type": "integer", "default": 50, "minimum": 0, "maximum": 100},
+      {"id": "min-gap", "title": "Minimum gap (frames)", "type": "integer", "default": 10, "minimum": 1, "maximum": 1000}
+    ]
+  }
+}
