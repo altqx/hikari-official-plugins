@@ -83,7 +83,7 @@ function actions.save()
         return
     end
     local picked = hikari.files.pick{title = "Save keyframes", save = true, name = "keyframes.txt",
-                                     filters = {{name = "Keyframes", patterns = {"*.txt"}}, {name = "All files", patterns = {"*"}}}}
+                                     filters = {{name = "Keyframes", patterns = {"*.txt"}}}}
     if picked and setKeyframes(picked.file) then
         state.applied = {saved = picked.name}
         render()
