@@ -1,7 +1,7 @@
 {
   "id": "hikarisub.keyframe-generator",
   "name": "Keyframe generator",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "api": 1,
   "main": "main.lua",
   "tier": "restricted",
