@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+
+- The README no longer names a minimum HikariSub version.
+
 ## 1.0.0
 
 - Record HikariSub commands and Automation macros, with their dialog answers, as a chain.

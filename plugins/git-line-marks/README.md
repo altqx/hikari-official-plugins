@@ -21,7 +21,7 @@ The plugin compares ASS Events, not text lines:
 
 ## Needs
 
-- HikariSub 0.1.0-beta.4 or later, which has the `document.saved` event ([#1114](https://github.com/altqx/hikari/issues/1114)), and git on PATH (Git for Windows on Windows).
+- git on PATH (Git for Windows on Windows).
 - An ASS file saved in a git repository. Other formats have no Events to match.
 - The **Read git** permission (`vcs.read`): the plugin reads the repository's branches, tags and recent commits, and the file as a ref has it. It never changes the repository, and it runs no git of its own: HikariSub runs git read-only.
 

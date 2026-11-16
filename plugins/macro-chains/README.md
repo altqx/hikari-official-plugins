@@ -4,10 +4,6 @@ Record a chain of HikariSub commands and Automation macros, with the answers you
 
 Inspired by [AegisubChain](https://github.com/arch1t3cht/AegisubChain) by arch1t3cht.
 
-## What it needs
-
-A HikariSub whose plugins can group their steps into one undo step ([altqx/hikari#1116](https://github.com/altqx/hikari/pull/1116)). On an older HikariSub the plugin loads, but its panel and commands only say to update HikariSub; your chains stay as they are.
-
 ## Record a chain
 
 Open the **Macro chains** panel (View › Panels) and choose **Record a chain**, or run the *Record a chain* command. Then work as usual: each macro and command that applies becomes a step, with what you answered in its dialogs. Undo while recording takes the last step back, and Redo brings it back. Name the chain and choose **Stop and save**.
