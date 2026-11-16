@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+
+- The README no longer names a minimum HikariSub version.
+
 ## 1.0.0
 
 - Marks the Grid's Lines added, changed or removed since a git branch, tag or commit, with a tooltip naming the change.
