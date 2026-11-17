@@ -1,0 +1,7 @@
+{
+  "cut.one": "EBU STL holds 2 rows of 40 characters, so Line %1 was cut.",
+  "cut.many": "EBU STL holds 2 rows of 40 characters, so Lines %1 were cut.",
+  "unsupported.one": "Line %1 has characters EBU STL can’t hold; they became “?”.",
+  "unsupported.many": "Lines %1 have characters EBU STL can’t hold; they became “?”.",
+  "separator": ", "
+}
