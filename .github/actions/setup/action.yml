@@ -12,7 +12,7 @@ runs:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       with:
         repository: altqx/hikari-plugins
-        ref: a5fa49a8ab6ed955ee8d3733a22d7a6399dd149c
+        ref: 352610c5058e0bddafb03c151f9cd2fb7bfd8d2d
         path: .registry
     - shell: bash
       run: |
