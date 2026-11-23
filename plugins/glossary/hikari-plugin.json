@@ -1,0 +1,28 @@
+{
+  "id": "hikarisub.glossary",
+  "name": "Glossary",
+  "version": "1.0.0",
+  "api": 1,
+  "main": "main.lua",
+  "tier": "restricted",
+  "authors": ["altqx"],
+  "summary": "Checks the subtitles against your team's glossary and offers the preferred term.",
+  "description": "List the terms your team avoids, each with the term to use instead, and every Line that uses one shows a problem in the Problems list, a squiggle in the line editor and a mark in the Grid. Quick fix puts the preferred term in. A Project can keep its own glossary.",
+  "license": "MIT",
+  "homepage": "https://github.com/altqx/hikari-official-plugins/tree/main/plugins/glossary",
+  "icon": "icon.svg",
+  "publicKey": "RWQwy4ukzuuZw1Rmfuf/pEwiEwWJhmXWHE8xGwRY6bWV/DRGBz3PbmYK",
+  "contributes": {
+    "commands": [
+      {"id": "check", "title": "Check the glossary now"}
+    ],
+    "settings": [
+      {"id": "terms", "title": "Glossary", "type": "list", "default": [], "maxItems": 256,
+       "description": "One term per row: the term to avoid, then → (or ->) and the term to use, such as “e-mail → email”. A term alone is flagged with no fix."},
+      {"id": "severity", "title": "Show uses as", "type": "choice", "options": ["Error", "Warning", "Information", "Hint"],
+       "default": "Warning"},
+      {"id": "match-case", "title": "Match case", "type": "boolean", "default": false,
+       "description": "Off: “E-mail” and “e-mail” both match “e-mail”."}
+    ]
+  }
+}
