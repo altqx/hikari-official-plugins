@@ -1,0 +1,19 @@
+{
+  "id": "hikarisub.ebu-stl",
+  "name": "EBU STL",
+  "version": "1.0.0",
+  "api": 1,
+  "main": "main.lua",
+  "tier": "restricted",
+  "authors": ["altqx"],
+  "summary": "Exports subtitles as EBU STL teletext files for broadcast delivery.",
+  "description": "Adds EBU STL (.stl) to Export as and Save as. Each Line becomes a teletext subtitle of up to 2 rows of 40 characters, at 25 or 30 frames a second, with italics, underline and top or bottom placement. Lines that don't fit are cut, and the export names them.",
+  "license": "MIT",
+  "homepage": "https://github.com/altqx/hikari-official-plugins/tree/main/plugins/ebu-stl",
+  "publicKey": "RWQwy4ukzuuZw1Rmfuf/pEwiEwWJhmXWHE8xGwRY6bWV/DRGBz3PbmYK",
+  "contributes": {
+    "formats": [
+      {"id": "ebu-stl", "title": "EBU STL", "extensions": ["stl"], "import": false, "export": true}
+    ]
+  }
+}
