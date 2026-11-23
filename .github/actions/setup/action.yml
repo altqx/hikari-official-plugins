@@ -18,6 +18,6 @@ runs:
       run: |
         pip install -r .registry/requirements.txt
         curl -fsSL -o "$RUNNER_TEMP/hikari-plugin.schema.json" \
-          https://raw.githubusercontent.com/altqx/hikari/f73e220599dfe521d4daead12cd3623886a98bda/docs/schemas/hikari-plugin.schema.json
+          https://raw.githubusercontent.com/altqx/hikari/b364de77ed02e1934ab76b09e73fea3bcf5aa20b/docs/schemas/hikari-plugin.schema.json
         echo "HIKARI_PLUGIN_SCHEMA=$RUNNER_TEMP/hikari-plugin.schema.json" >> "$GITHUB_ENV"
         echo "PYTHONPATH=$GITHUB_WORKSPACE/.registry" >> "$GITHUB_ENV"
