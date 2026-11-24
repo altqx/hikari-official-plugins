@@ -1,0 +1,20 @@
+{
+  "id": "hikarisub.ass-tags",
+  "name": "ASS tags",
+  "version": "1.0.0",
+  "api": 1,
+  "main": "main.lua",
+  "tier": "restricted",
+  "authors": ["altqx"],
+  "summary": "Completes override tag arguments and explains a tag when you hover over it.",
+  "description": "In the line editor, typing \\fad( offers common fade lengths, and \\fn offers the fonts the file's Styles use. Resting the pointer on an override tag shows what it does with its arguments, such as “Fade: 200 ms in, 300 ms out”.",
+  "license": "MIT",
+  "homepage": "https://github.com/altqx/hikari-official-plugins/tree/main/plugins/ass-tags",
+  "publicKey": "RWQwy4ukzuuZw1Rmfuf/pEwiEwWJhmXWHE8xGwRY6bWV/DRGBz3PbmYK",
+  "contributes": {
+    "providers": {
+      "completion": {"triggers": ["(", "n"], "fields": ["text", "translation"]},
+      "hover": {"fields": ["text", "translation"]}
+    }
+  }
+}
