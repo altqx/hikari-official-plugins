@@ -1,0 +1,94 @@
+{
+  "id": "hikarisub.typos",
+  "name": "Typos",
+  "version": "1.0.0",
+  "api": 1,
+  "authors": [
+    "altqx"
+  ],
+  "summary": "Underlines common misspellings in the line editor and offers the fix.",
+  "description": "Runs typos-lsp on each open file's text and translation. Each misspelling it knows, such as “teh” or “recieve”, shows in the Problems panel and as a wavy underline, with the correction as a quick fix (Alt+Enter). Override tags are left out of the check, and a fix never touches them. Nothing leaves your computer.",
+  "license": "MIT",
+  "homepage": "https://github.com/altqx/hikari-official-plugins/tree/main/plugins/typos",
+  "publicKey": "RWQwy4ukzuuZw1Rmfuf/pEwiEwWJhmXWHE8xGwRY6bWV/DRGBz3PbmYK",
+  "permissions": {
+    "programs": "Runs typos-lsp, a spelling checker, on the text you edit."
+  },
+  "contributes": {
+    "programs": [
+      {
+        "id": "typos-lsp",
+        "title": "typos-lsp",
+        "network": false,
+        "platforms": {
+          "linux-x64": {
+            "download": {
+              "url": "https://github.com/tekumara/typos-lsp/releases/download/v0.1.58/typos-lsp-v0.1.58-x86_64-unknown-linux-musl.tar.gz",
+              "sha256": "c25cfe09258dfa9c759727f75269eaee940741fffb18826f66b5787b93f19550",
+              "size": 5705163,
+              "archive": "tar.gz",
+              "entry": "typos-lsp"
+            }
+          },
+          "linux-arm64": {
+            "download": {
+              "url": "https://github.com/tekumara/typos-lsp/releases/download/v0.1.58/typos-lsp-v0.1.58-aarch64-unknown-linux-musl.tar.gz",
+              "sha256": "effdb52a670f3591b360d0d1ba66bcdbcd851338192e665dd7298f9c05e3c7c4",
+              "size": 4746654,
+              "archive": "tar.gz",
+              "entry": "typos-lsp"
+            }
+          },
+          "windows-x64": {
+            "download": {
+              "url": "https://github.com/tekumara/typos-lsp/releases/download/v0.1.58/typos-lsp-v0.1.58-x86_64-pc-windows-msvc.zip",
+              "sha256": "626fc52b7f056c9b84714fecb8cc6af926a11cca5b7e17126d809d8615ccab95",
+              "size": 3764873,
+              "archive": "zip",
+              "entry": "target/x86_64-pc-windows-msvc/release/typos-lsp.exe"
+            }
+          },
+          "windows-arm64": {
+            "download": {
+              "url": "https://github.com/tekumara/typos-lsp/releases/download/v0.1.58/typos-lsp-v0.1.58-aarch64-pc-windows-msvc.zip",
+              "sha256": "b9b58f2ba525afcb46520f815a806435d96d16b231ede568b95bbbd68ae95e46",
+              "size": 3638015,
+              "archive": "zip",
+              "entry": "target/aarch64-pc-windows-msvc/release/typos-lsp.exe"
+            }
+          },
+          "macos-x64": {
+            "download": {
+              "url": "https://github.com/tekumara/typos-lsp/releases/download/v0.1.58/typos-lsp-v0.1.58-x86_64-apple-darwin.tar.gz",
+              "sha256": "53da2d2f688eb1e8b79c9e67fe21711fce651fcba9d797d444ff7444e440ae05",
+              "size": 4205121,
+              "archive": "tar.gz",
+              "entry": "typos-lsp"
+            }
+          },
+          "macos-arm64": {
+            "download": {
+              "url": "https://github.com/tekumara/typos-lsp/releases/download/v0.1.58/typos-lsp-v0.1.58-aarch64-apple-darwin.tar.gz",
+              "sha256": "ef2bd582fc4a180bb5ac139fd9eb231d63dc7f11707651066bd62620f5ee57ce",
+              "size": 4186793,
+              "archive": "tar.gz",
+              "entry": "typos-lsp"
+            }
+          }
+        }
+      }
+    ],
+    "languageServers": [
+      {
+        "id": "typos",
+        "title": "Typos",
+        "program": "typos-lsp",
+        "fields": [
+          "text",
+          "translation"
+        ],
+        "tags": "blank"
+      }
+    ]
+  }
+}
